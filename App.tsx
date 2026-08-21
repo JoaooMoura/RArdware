@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar, StyleSheet, Text, View } from 'react-native';
+import { initDatabase } from '@db';
 
 function App(): React.JSX.Element {
+  const [dbReady, setDbReady] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function bootstrap() {
+      try {
+        await initDatabase();
+        setDbReady(true);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        setErrorMsg(message);
+      }
+    }
+    bootstrap();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#172E54" />
+      <StatusBar barStyle="light-content" />
       <View style={styles.header}>
         <Text style={styles.logo}>RArdware</Text>
         <Text style={styles.subtitle}>Realidade Aumentada para Ensino de Hardware</Text>
@@ -12,11 +29,11 @@ function App(): React.JSX.Element {
 
       <View style={styles.card}>
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>SETUP T01.1 OK</Text>
+          <Text style={styles.badgeText}>SETUP T02.1 OK</Text>
         </View>
-        <Text style={styles.title}>Ambiente & Projeto Prontos!</Text>
+        <Text style={styles.title}>Banco SQLite + Drizzle Configurado</Text>
         <Text style={styles.description}>
-          React Native Bare configurado com TypeScript Strict, ESLint, Prettier, e Path Aliases.
+          Schemas das 4 tabelas relacionais criados com Foreign Keys e Drizzle ORM Type-Safe.
         </Text>
 
         <View style={styles.infoRow}>
@@ -24,12 +41,14 @@ function App(): React.JSX.Element {
           <Text style={styles.infoValue}>Android</Text>
         </View>
         <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>Engine AR:</Text>
-          <Text style={styles.infoValue}>AR.js + Babylon.js</Text>
+          <Text style={styles.infoLabel}>Banco Local:</Text>
+          <Text style={styles.infoValue}>
+            {errorMsg ? `Erro: ${errorMsg}` : dbReady ? 'Conectado (rardware.db)' : 'Conectando...'}
+          </Text>
         </View>
         <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>Banco Local:</Text>
-          <Text style={styles.infoValue}>SQLite + Drizzle</Text>
+          <Text style={styles.infoLabel}>Tabelas:</Text>
+          <Text style={styles.infoValue}>4 schemas mapeados</Text>
         </View>
       </View>
     </View>
