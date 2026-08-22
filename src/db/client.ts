@@ -62,6 +62,12 @@ export async function initDatabase(): Promise<void> {
   ];
 
   for (const statement of createTablesStatements) {
-    sqliteConnection.execute(statement);
+    await sqliteConnection.execute(statement);
   }
+
+  console.log('Tabelas relacionais verificadas/criadas com sucesso.');
+
+  // Rodar o seed inicial
+  const { executeSeed } = require('./seed/runSeed');
+  await executeSeed(db);
 }
