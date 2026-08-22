@@ -16,8 +16,10 @@ module.exports = {
           '@store': './src/store',
           '@theme': './src/theme',
           '@utils': './src/utils',
+          '@navigation': './src/navigation',
         },
       },
     ],
+    'react-native-reanimated/plugin',
   ],
 };

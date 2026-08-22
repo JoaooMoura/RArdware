@@ -20,7 +20,9 @@
       "@theme/*": ["./src/theme/*"],
       "@theme": ["./src/theme"],
       "@utils/*": ["./src/utils/*"],
-      "@utils": ["./src/utils"]
+      "@utils": ["./src/utils"],
+      "@navigation/*": ["./src/navigation/*"],
+      "@navigation": ["./src/navigation"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
