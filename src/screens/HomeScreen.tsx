@@ -50,11 +50,11 @@ export function HomeScreen() {
       <Text style={styles.sectionTitle}>Módulos Disponíveis</Text>
 
       <ActionCard
-        icon="📷"
-        title="Realidade Aumentada"
-        description="Aponte a câmera para marcadores e visualize circuitos e hardware em 3D interativo."
-        tag="Módulo AR"
-        onPress={() => navigation.navigate('RealidadeAumentada')}
+        icon="🎮"
+        title="Simulador 3D"
+        description="Gire, aproxime e disseque componentes de hardware diretamente na tela do celular."
+        tag="Simulador 3D"
+        onPress={() => navigation.navigate('Simulador3D')}
       />
 
       <ActionCard

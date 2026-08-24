@@ -3,7 +3,7 @@ import type { RouteProp } from '@react-navigation/native';
 
 export type RootDrawerParamList = {
   Home: undefined;
-  RealidadeAumentada: undefined;
+  Simulador3D: undefined;
   Enciclopedia: undefined;
   Manual: undefined;
 };

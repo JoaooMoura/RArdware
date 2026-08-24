@@ -1,7 +1,7 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerContent } from '@components/DrawerContent';
-import { ARScreen } from '@screens/ARScreen';
+import { Simulador3DScreen } from '@screens/Simulador3DScreen';
 import { EnciclopediaScreen } from '@screens/EnciclopediaScreen';
 import { HomeScreen } from '@screens/HomeScreen';
 import { ManualScreen } from '@screens/ManualScreen';
@@ -44,11 +44,11 @@ export function RootNavigator() {
         }}
       />
       <Drawer.Screen
-        name="RealidadeAumentada"
-        component={ARScreen}
+        name="Simulador3D"
+        component={Simulador3DScreen}
         options={{
-          title: 'Realidade Aumentada',
-          headerTitle: 'Realidade Aumentada',
+          title: 'Simulador 3D',
+          headerTitle: 'Montagem de PC',
         }}
       />
       <Drawer.Screen

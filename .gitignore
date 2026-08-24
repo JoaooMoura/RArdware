@@ -73,3 +73,11 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# 3D Models
+*.bin
+*.gltf
+*.glb
+*.fbx
+*.obj
+
