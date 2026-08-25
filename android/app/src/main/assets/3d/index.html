@@ -16,65 +16,72 @@
     }
     model-viewer {
       width: 100%;
-      height: 100%;
+      height: 60vh; /* Deixa 40vh para o painel */
       --poster-color: transparent;
     }
     
-    /* Controles de Dissecção */
-    .controls {
-      position: absolute;
-      bottom: 20px;
-      left: 0;
-      right: 0;
-      padding: 10px 20px;
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      z-index: 10;
-      justify-content: center;
-    }
-    
-    .chip {
-      background: rgba(47, 84, 255, 0.9);
-      border: 1px solid #4D6BFF;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 25px;
-      font-weight: 600;
-      font-size: 14px;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(47, 84, 255, 0.4);
-    }
-    
-    .chip:active {
-      transform: scale(0.95);
-    }
-    
-    .chip.hidden {
-      background: rgba(40, 40, 40, 0.8);
-      color: #999;
-      border-color: #555;
-      box-shadow: none;
-    }
-
     .title-bar {
       position: absolute;
-      top: 20px;
-      left: 20px;
+      top: 10px;
+      left: 10px;
       color: white;
       z-index: 10;
+      pointer-events: none;
     }
-    .title-bar h1 {
-      margin: 0;
-      font-size: 20px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    .title-bar h1 { margin: 0; font-size: 18px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+    .title-bar p { margin: 4px 0 0 0; font-size: 12px; color: #aaa; }
+
+    /* Painel de Checklist */
+    .controls-panel {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40vh;
+      background: rgba(15, 15, 20, 0.95);
+      border-top: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      z-index: 10;
+      box-sizing: border-box;
     }
-    .title-bar p {
-      margin: 4px 0 0 0;
-      font-size: 12px;
-      color: #aaa;
+
+    #btn-all {
+      background: #ff2a2a;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .checklist {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      color: white;
+      font-size: 14px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+    }
+    .checklist-item:active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .checklist-item input {
+      margin-right: 15px;
+      transform: scale(1.4);
     }
   </style>
   <script src="./model-viewer-legacy.js"></script>
@@ -83,45 +90,231 @@
 
   <div class="title-bar">
     <h1>Custom Gaming PC</h1>
-    <p>Gire e dê zoom. Clique para dissecar.</p>
+    <p>Gire o modelo. Desmarque para ocultar a peça.</p>
   </div>
 
   <model-viewer 
     id="pc-viewer"
-    src="./models/pc/scene.gltf" 
+    src="./models/pc/scene.glb" 
     camera-controls 
-    auto-rotate 
-    rotation-per-second="15deg"
     shadow-intensity="1"
     environment-image="neutral"
     exposure="1"
     interaction-prompt="none"
   >
-    <div class="controls">
-      <button class="chip" onclick="toggleMesh('gabinete', this)">Gabinete 👁️</button>
-      <button class="chip" onclick="toggleMesh('placa', this)">Placa-mãe 👁️</button>
-      <button class="chip" onclick="toggleMesh('cooler', this)">Refrigeração 👁️</button>
-    </div>
   </model-viewer>
+
+  <div class="controls-panel">
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Simulador PC</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #0b0c10;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+    model-viewer {
+      width: 100%;
+      height: 60vh; /* Deixa 40vh para o painel */
+      --poster-color: transparent;
+    }
+    
+    .title-bar {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .title-bar h1 { margin: 0; font-size: 18px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+    .title-bar p { margin: 4px 0 0 0; font-size: 12px; color: #aaa; }
+
+    /* Painel de Checklist */
+    .controls-panel {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40vh;
+      background: rgba(15, 15, 20, 0.95);
+      border-top: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    #btn-all {
+      background: #ff2a2a;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .checklist {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      color: white;
+      font-size: 14px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+    }
+    .checklist-item:active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .checklist-item input {
+      margin-right: 15px;
+      transform: scale(1.4);
+    }
+  </style>
+  <script src="./model-viewer-legacy.js"></script>
+</head>
+<body>
+
+  <div class="title-bar">
+    <h1>Custom Gaming PC</h1>
+    <p>Gire o modelo. Desmarque para ocultar a peça.</p>
+  </div>
+
+  <model-viewer 
+    id="pc-viewer"
+    src="./models/pc/scene.glb" 
+    camera-controls 
+    shadow-intensity="1"
+    environment-image="neutral"
+    exposure="1"
+    interaction-prompt="none"
+  >
+  </model-viewer>
+
+  <div class="controls-panel">
+    <button id="btn-all">☠️ DESMARCAR TUDO</button>
+    <div class="checklist" id="checklist-container">
+      <span style="color: white; font-size: 14px;">Carregando scanner...</span>
+    </div>
+  </div>
 
   <script>
     const modelViewer = document.querySelector('#pc-viewer');
+    const controlsContainer = document.querySelector('#checklist-container');
+    const btnAll = document.querySelector('#btn-all');
     
+    // Dicionário de tradução dos materiais
+    const nomeDasPecas = {
+      "Material.006": "🖥️ Gabinete (Estrutura)",
+      "GamerStorm_logo": "Logotipo GamerStorm",
+      "ROGTRANSPARENT": "Vidro/Acrílico ROG",
+    };
+
     modelViewer.addEventListener('error', (event) => {
       console.error('MODEL LOAD ERROR: ' + JSON.stringify(event.detail));
     });
 
-    function toggleMesh(partName, btn) {
-      const isHidden = btn.classList.contains('hidden');
+    modelViewer.addEventListener('load', () => {
+      const materials = modelViewer.model.materials;
+      controlsContainer.innerHTML = ''; 
       
-      if (isHidden) {
-        btn.classList.remove('hidden');
-        btn.innerHTML = btn.innerHTML.replace('❌', '👁️');
-      } else {
-        btn.classList.add('hidden');
-        btn.innerHTML = btn.innerHTML.replace('👁️', '❌');
+      if (!materials || materials.length === 0) {
+        controlsContainer.innerHTML = '<span style="color:red">Nenhum material detectado</span>';
+        return;
       }
-    }
+
+      // Cache das propriedades originais de fábrica de cada material
+      const originalStates = new Map();
+      materials.forEach(m => {
+        const baseColor = m.pbrMetallicRoughness ? m.pbrMetallicRoughness.baseColorFactor : [1, 1, 1, 1];
+        originalStates.set(m, {
+          alphaMode: m.alphaMode || 'OPAQUE',
+          alphaCutoff: m.alphaCutoff || 0.5,
+          baseColor: [baseColor[0], baseColor[1], baseColor[2], baseColor[3]] 
+        });
+      });
+
+      // Função utilitária corrigida
+      const setVisibility = (material, isVisible) => {
+        const orig = originalStates.get(material);
+        if (isVisible) {
+          // Restaura a cor, alpha e tipo originais da peça
+          material.setAlphaMode(orig.alphaMode);
+          material.setAlphaCutoff(orig.alphaCutoff);
+          if(material.pbrMetallicRoughness) material.pbrMetallicRoughness.setBaseColorFactor(orig.baseColor);
+        } else {
+          // Oculta forçando recorte MASK
+          material.setAlphaMode('MASK');
+          material.setAlphaCutoff(1.0);
+          if(material.pbrMetallicRoughness) {
+             material.pbrMetallicRoughness.setBaseColorFactor([
+               orig.baseColor[0], orig.baseColor[1], orig.baseColor[2], 0
+             ]);
+          }
+        }
+      }
+
+      // Botão Mestre
+      btnAll.onclick = () => {
+        const isHidden = btnAll.dataset.hidden === 'true';
+        if (isHidden) {
+          materials.forEach(m => setVisibility(m, true));
+          btnAll.dataset.hidden = 'false';
+          btnAll.innerHTML = '☠️ DESMARCAR TUDO';
+          btnAll.style.backgroundColor = '#ff2a2a';
+          document.querySelectorAll('.checklist-item input').forEach(cb => cb.checked = true);
+        } else {
+          materials.forEach(m => setVisibility(m, false));
+          btnAll.dataset.hidden = 'true';
+          btnAll.innerHTML = '✨ MARCAR TUDO';
+          btnAll.style.backgroundColor = '#4D6BFF';
+          document.querySelectorAll('.checklist-item input').forEach(cb => cb.checked = false);
+        }
+      };
+
+      // Checkboxes individuais
+      materials.forEach((material, index) => {
+        const rawName = material.name || `Material_${index}`;
+        if (rawName.includes('floatBufferViews')) return;
+
+        const displayName = nomeDasPecas[rawName] || `⚙️ ${rawName}`;
+
+        const label = document.createElement('label');
+        label.className = 'checklist-item';
+        
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = true; // Por padrão todos estão visíveis
+        
+        cb.onchange = (e) => {
+          setVisibility(material, e.target.checked);
+        };
+        
+        label.appendChild(cb);
+        label.appendChild(document.createTextNode(displayName));
+        controlsContainer.appendChild(label);
+      });
+    });
   </script>
 </body>
 </html>

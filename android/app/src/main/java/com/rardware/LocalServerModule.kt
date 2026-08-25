@@ -26,7 +26,12 @@ class LocalServerModule(reactContext: ReactApplicationContext) : ReactContextBas
                 server?.start()
                 promise.resolve("http://localhost:$PORT")
             } catch (e: Exception) {
-                promise.reject("SERVER_ERROR", "Could not start server: ${e.message}")
+                if (e.message?.contains("EADDRINUSE") == true || e.message?.contains("already in use") == true) {
+                    // O servidor já está rodando em background de um Fast Refresh anterior (RR)
+                    promise.resolve("http://localhost:$PORT")
+                } else {
+                    promise.reject("SERVER_ERROR", "Could not start server: ${e.message}")
+                }
             }
         } else {
             promise.resolve("http://localhost:$PORT")
