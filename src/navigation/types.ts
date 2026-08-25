@@ -5,6 +5,7 @@ export type RootDrawerParamList = {
   Home: undefined;
   Simulador3D: undefined;
   Enciclopedia: undefined;
+  HardwareDetail: { id: number };
   Manual: undefined;
 };
 

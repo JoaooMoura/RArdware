@@ -212,7 +212,7 @@
   </model-viewer>
 
   <div class="controls-panel">
-    <button id="btn-all">☠️ DESMARCAR TUDO</button>
+    <button id="btn-all"> DESMARCAR TUDO</button>
     <div class="checklist" id="checklist-container">
       <span style="color: white; font-size: 14px;">Carregando scanner...</span>
     </div>
@@ -280,7 +280,7 @@
         if (isHidden) {
           materials.forEach(m => setVisibility(m, true));
           btnAll.dataset.hidden = 'false';
-          btnAll.innerHTML = '☠️ DESMARCAR TUDO';
+          btnAll.innerHTML = 'DESMARCAR TUDO';
           btnAll.style.backgroundColor = '#ff2a2a';
           document.querySelectorAll('.checklist-item input').forEach(cb => cb.checked = true);
         } else {

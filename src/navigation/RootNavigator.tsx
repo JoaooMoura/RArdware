@@ -3,6 +3,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerContent } from '@components/DrawerContent';
 import { Simulador3DScreen } from '@screens/Simulador3DScreen';
 import { EnciclopediaScreen } from '@screens/EnciclopediaScreen';
+import { HardwareDetailScreen } from '@screens/HardwareDetailScreen';
 import { HomeScreen } from '@screens/HomeScreen';
 import { ManualScreen } from '@screens/ManualScreen';
 import { colors } from '@theme';
@@ -57,6 +58,15 @@ export function RootNavigator() {
         options={{
           title: 'Enciclopédia',
           headerTitle: 'Enciclopédia de Hardware',
+        }}
+      />
+      <Drawer.Screen
+        name="HardwareDetail"
+        component={HardwareDetailScreen}
+        options={{
+          title: 'Detalhes da Peça',
+          headerTitle: 'Detalhes',
+          drawerItemStyle: { display: 'none' } // Oculta a tela de detalhes do menu da gaveta
         }}
       />
       <Drawer.Screen

@@ -1,66 +1,65 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { RootDrawerNavigationProp } from '@navigation/types';
 import { colors } from '@theme';
-
-interface MockComponent {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-}
-
-const MOCK_ITEMS: MockComponent[] = [
-  {
-    id: '1',
-    name: 'Processador (CPU)',
-    category: 'Processamento',
-    description:
-      'Unidade central de processamento responsável por executar instruções de programas.',
-  },
-  {
-    id: '2',
-    name: 'Memória RAM',
-    category: 'Armazenamento Temporário',
-    description: 'Memória de acesso rápido volátil utilizada para armazenar dados em execução.',
-  },
-  {
-    id: '3',
-    name: 'Placa-Mãe (Motherboard)',
-    category: 'Interconexão',
-    description:
-      'Placa de circuito impresso que conecta todos os periféricos e componentes do computador.',
-  },
-  {
-    id: '4',
-    name: 'Placa de Vídeo (GPU)',
-    category: 'Processamento Gráfico',
-    description: 'Hardware dedicado à renderização de imagens, vídeos e computação paralela.',
-  },
-];
+import { useHardwares } from '../hooks/useHardwares';
 
 export function EnciclopediaScreen() {
+  const { data, isLoading, error } = useHardwares();
+  const navigation = useNavigation<RootDrawerNavigationProp<'Enciclopedia'>>();
+
+  if (isLoading) {
+    return (
+      <View style={styles.centerContainer}>
+        <ActivityIndicator size="large" color="#4D6BFF" />
+        <Text style={styles.loadingText}>Carregando catálogo...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centerContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Buscar componente ou tecnologia..."
-          placeholderTextColor="#94A3B8"
-        />
-      </View>
-
       <FlatList
-        data={MOCK_ITEMS}
-        keyExtractor={item => item.id}
+        data={data}
+        keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>Nenhum componente cadastrado.</Text>
+        }
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} activeOpacity={0.7}>
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>{item.category}</Text>
+          <TouchableOpacity 
+            style={styles.card} 
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate('HardwareDetail', { id: item.id })}
+          >
+            {item.imagemPath && (item.imagemPath.startsWith('http') || item.imagemPath.startsWith('file://')) ? (
+              <Image 
+                source={{ uri: item.imagemPath }} 
+                style={styles.cardImage} 
+                resizeMode="cover" 
+              />
+            ) : (
+              <View style={styles.imagePlaceholder}>
+                <Text style={styles.imagePlaceholderText}>No Img</Text>
+              </View>
+            )}
+            
+            <View style={styles.cardContent}>
+              <Text style={styles.cardTitle}>{item.nome}</Text>
+              <Text style={styles.cardDescription} numberOfLines={2}>
+                {item.descricao}
+              </Text>
             </View>
-            <Text style={styles.cardTitle}>{item.name}</Text>
-            <Text style={styles.cardDescription}>{item.description}</Text>
           </TouchableOpacity>
         )}
       />
@@ -71,56 +70,72 @@ export function EnciclopediaScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#0b0c10', // Dark theme aplicado
   },
-  searchContainer: {
-    padding: 16,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+  centerContainer: {
+    flex: 1,
+    backgroundColor: '#0b0c10',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  searchInput: {
-    backgroundColor: '#F1F5F9',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: colors.text,
+  loadingText: {
+    color: '#CBD5E1',
+    marginTop: 12,
+  },
+  errorText: {
+    color: '#EF4444',
+    fontSize: 16,
+    textAlign: 'center',
+    padding: 20,
+  },
+  emptyText: {
+    color: '#94A3B8',
+    textAlign: 'center',
+    marginTop: 40,
   },
   listContent: {
     padding: 16,
   },
   card: {
-    backgroundColor: colors.cardBg,
+    backgroundColor: '#15161c',
     borderRadius: 16,
-    padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: colors.border,
-    elevation: 1,
+    borderColor: '#333',
+    elevation: 4,
+    flexDirection: 'row',
+    overflow: 'hidden',
   },
-  badge: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#EEF2FF',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    marginBottom: 8,
+  cardImage: {
+    width: 100,
+    height: 100,
+    backgroundColor: '#222',
   },
-  badgeText: {
-    color: colors.primary,
-    fontSize: 11,
-    fontWeight: '600',
+  imagePlaceholder: {
+    width: 100,
+    height: 100,
+    backgroundColor: '#222',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imagePlaceholderText: {
+    color: '#555',
+    fontSize: 12,
+  },
+  cardContent: {
+    flex: 1,
+    padding: 16,
+    justifyContent: 'center',
   },
   cardTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: colors.text,
+    color: '#FFFFFF',
     marginBottom: 6,
   },
   cardDescription: {
     fontSize: 13,
-    color: colors.textSecondary,
+    color: '#CBD5E1',
     lineHeight: 18,
   },
 });

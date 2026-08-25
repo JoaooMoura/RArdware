@@ -14,8 +14,12 @@ export async function executeSeed(db: any) {
     console.log('Passo 1 Result:', JSON.stringify(result));
 
     let hardwareCount = 0;
-    if (result && result.rows && result.rows._array) {
-      hardwareCount = result.rows._array[0]?.total ?? 0;
+    if (result && result.rows) {
+      if (Array.isArray(result.rows)) {
+        hardwareCount = result.rows[0]?.total ?? 0;
+      } else if (result.rows._array) {
+        hardwareCount = result.rows._array[0]?.total ?? 0;
+      }
     } else if (Array.isArray(result)) {
       hardwareCount = result[0]?.total ?? 0;
     }
@@ -37,8 +41,12 @@ export async function executeSeed(db: any) {
     const gabResult: any = await (sqliteConnection as any)[executeMethod]("SELECT id FROM hardware WHERE nome = 'Gabinete (Case)' LIMIT 1");
     
     let gabineteId = null;
-    if (gabResult && gabResult.rows && gabResult.rows._array) gabineteId = gabResult.rows._array[0]?.id;
-    else if (Array.isArray(gabResult)) gabineteId = gabResult[0]?.id;
+    if (gabResult && gabResult.rows) {
+      if (Array.isArray(gabResult.rows)) gabineteId = gabResult.rows[0]?.id;
+      else if (gabResult.rows._array) gabineteId = gabResult.rows._array[0]?.id;
+    } else if (Array.isArray(gabResult)) {
+      gabineteId = gabResult[0]?.id;
+    }
 
     console.log('🌱 Seed passo 4: Inserindo Modelo AR');
     const modInsert: any = await (sqliteConnection as any)[executeMethod](
@@ -50,8 +58,12 @@ export async function executeSeed(db: any) {
     let insertedModeloId = modInsert?.insertId;
     if (!insertedModeloId) {
       const fallbackQuery: any = await (sqliteConnection as any)[executeMethod]('SELECT max(id) as id FROM modelo_ar');
-      if (fallbackQuery && fallbackQuery.rows && fallbackQuery.rows._array) insertedModeloId = fallbackQuery.rows._array[0]?.id;
-      else if (Array.isArray(fallbackQuery)) insertedModeloId = fallbackQuery[0]?.id;
+      if (fallbackQuery && fallbackQuery.rows) {
+        if (Array.isArray(fallbackQuery.rows)) insertedModeloId = fallbackQuery.rows[0]?.id;
+        else if (fallbackQuery.rows._array) insertedModeloId = fallbackQuery.rows._array[0]?.id;
+      } else if (Array.isArray(fallbackQuery)) {
+        insertedModeloId = fallbackQuery[0]?.id;
+      }
     }
 
     if (!insertedModeloId) {
